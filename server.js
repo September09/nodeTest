@@ -1,16 +1,22 @@
 var http = require('http');
+var url = require("url");
 
-http.createServer(function (request, response) {
+function start(route) {
+    function onRequest(request, response) {
+        var pathname = url.parse(request.url).pathname;
+        console.log("Resuesr for " + pathname + " received");
 
-    // 发送 HTTP 头部
-    // HTTP 状态值: 200 : OK
-    // 内容类型: text/plain
-    response.writeHead(200, {'Content-Type': 'text/plain'});
+        route(pathname);
 
-    // 发送响应数据 "Hello World"
-    response.write("Hello World");
-    response.end();
-}).listen(8888);
+        response.writeHead(200, {"Content-Type": "text/plain"});
+        response.write("Hello World");
+        response.end();
+    }
 
-// 终端打印如下信息
-console.log('Server running at http://127.0.0.1:8888/');
+    http.createServer(onRequest).listen(3333);
+    console.log("Server has started.");
+    console.log( '__filename:'+ __filename );
+    console.log( '__dirname:' + __dirname );
+}
+
+exports.start = start;
